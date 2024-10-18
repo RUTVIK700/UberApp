@@ -4,7 +4,7 @@ Sure! Here's the previous `README.md` for the Uber Backend Spring Boot applicati
 
 # 🚖 Uber Backend Spring Boot Application
 
-Welcome to the **Uber Backend Spring Boot Application**, a fully functional backend for an Uber-like ride-hailing service! This project implements features such as user authentication, ride request management, driver-rider matching, and real-time tracking with Spring Boot and PostGIS for geospatial data.
+Welcome to the **Uber Backend Spring Boot Application**, a fully functional backend for an Uber-like ride-hailing service! This project implements features such as user authentication, ride request management, driver-rider matching, with Spring Boot and PostGIS for geospatial data.
 
 ---
 
@@ -15,21 +15,15 @@ Welcome to the **Uber Backend Spring Boot Application**, a fully functional back
   - User registration and login with Spring Security.
   
 - **Ride Management**
-  - Request, accept, and complete rides.
+  - Request, accept, cancel, complete, rate rides.
   - Driver and rider matching based on geolocation (PostGIS).
-
-- **Real-time Location Tracking**
-  - Real-time updates on driver and rider location using geospatial data.
 
 - **Driver & Rider Management**
   - Driver verification workflow for admins.
   - Ride history and status management.
 
 - **Payments & Transactions**
-  - Integration with payment gateways (e.g., Stripe or PayPal).
-
-- **Admin Dashboard**
-  - Admin functionality to monitor and manage the platform.
+  - Tracking each transcation and also implemented wallet for each user.
   
 - **API Documentation**
   - Interactive API documentation with Swagger.
@@ -40,7 +34,7 @@ Welcome to the **Uber Backend Spring Boot Application**, a fully functional back
 
 | Technology               | Description                                        |
 |--------------------------|----------------------------------------------------|
-| **Spring Boot**           | Java-based framework for building microservices.   |
+| **Spring Boot**           | Java-based framework for building application.   |
 | **REST API**              | Build and expose RESTful services for interaction. |
 | **Spring Security & JWT** | Secure APIs with role-based access control.        |
 | **Hibernate (JPA)**       | ORM to handle database interaction with entities.  |
@@ -55,7 +49,7 @@ Make sure you have the following installed:
 
 - **Java 17** or later
 - **Maven 3.8+**
-- **PostgreSQL 13** (with PostGIS extension)
+- **PostgreSQL 13** or later(with PostGIS extension)
 
 ---
 
@@ -64,8 +58,8 @@ Make sure you have the following installed:
 ### 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/yourusername/uber-backend-springboot.git
-cd uber-backend-springboot
+git clone https://github.com/yourusername/UberApp.git
+cd UberApp
 ```
 
 ### 2. **Configure the Application**
@@ -84,7 +78,7 @@ spring.jpa.show-sql=true
 
 # JWT properties
 jwt.secret=your-jwt-secret
-jwt.expiration=86400000  # Token expiration in milliseconds
+
 
 # Swagger UI properties
 springdoc.swagger-ui.path=/swagger-ui.html
@@ -130,21 +124,8 @@ mvn test
 ---
 
 ## 📖 API Endpoints
+## Here is a full API Endpoints of all API path (Open it in PostMan)
 
-### Authentication
-
-- **POST** `/api/auth/register` - Register a new user (driver/rider).
-- **POST** `/api/auth/login` - Authenticate and receive a JWT token.
-
-### Ride Management
-
-- **POST** `/api/rides/request` - Request a new ride.
-- **POST** `/api/rides/{id}/accept` - Driver accepts a ride.
-- **POST** `/api/rides/{id}/complete` - Mark a ride as completed.
-
-### Payment
-
-- **POST** `/api/payment/checkout` - Handle ride payments.
 
 Check out the full API docs at `/swagger-ui.html`!
 
@@ -156,7 +137,7 @@ This project uses PostgreSQL along with **PostGIS** to handle geospatial queries
 
 - **Users**: Stores user information (riders, drivers, admins).
 - **Rides**: Stores ride details including start and end locations (geospatial data).
-- **Drivers**: Driver-specific information like vehicle and license details.
+- **Drivers**: Driver-specific information like vehicle details.
 - **Payments**: Handles transaction information for rides.
 
 ---
