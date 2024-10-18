@@ -1,168 +1,165 @@
-Sure! Here's the previous `README.md` for the Uber Backend Spring Boot application:
+
+# 🚖 UberApp – Ride-Hailing Backend  
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)  
+![PostGIS](https://img.shields.io/badge/PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)  
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)  
+
+**UberApp** is a backend system designed to simulate a ride-hailing service. It features real-time ride requests, user management, geospatial data handling, and secure authentication using **Spring Security**.
 
 ---
 
-# 🚖 Uber Backend Spring Boot Application
+## 📑 Table of Contents  
+- [🚀 Features](#-features)  
+- [🛠️ Tech Stack](#️-tech-stack)  
+- [📦 Installation](#-installation)  
+- [🗄️ Database Setup](#️-database-setup)  
+- [▶️ Running the Project](#️-running-the-project)  
+- [📋 API Documentation](#-api-documentation)  
+- [📂 Project Structure](#-project-structure)  
+- [🤝 Contributing](#-contributing)  
 
-Welcome to the **Uber Backend Spring Boot Application**, a fully functional backend for an Uber-like ride-hailing service! This project implements features such as user authentication, ride request management, driver-rider matching, with Spring Boot and PostGIS for geospatial data.
-
----
-
-## 🌟 Features
-
-- **User Authentication & Authorization**
-  - Role-based JWT authentication (Rider, Driver, Admin).
-  - User registration and login with Spring Security.
-  
-- **Ride Management**
-  - Request, accept, cancel, complete, rate rides.
-  - Driver and rider matching based on geolocation (PostGIS).
-
-- **Driver & Rider Management**
-  - Driver verification workflow for admins.
-  - Ride history and status management.
-
-- **Payments & Transactions**
-  - Tracking each transcation and also implemented wallet for each user.
-  
-- **API Documentation**
-  - Interactive API documentation with Swagger.
 
 ---
 
-## 🚀 Technology Stack
-
-| Technology               | Description                                        |
-|--------------------------|----------------------------------------------------|
-| **Spring Boot**           | Java-based framework for building application.   |
-| **REST API**              | Build and expose RESTful services for interaction. |
-| **Spring Security & JWT** | Secure APIs with role-based access control.        |
-| **Hibernate (JPA)**       | ORM to handle database interaction with entities.  |
-| **PostgreSQL & PostGIS**  | PostgreSQL database with PostGIS for geolocation.  |
-| **Swagger API**           | Generate and visualize API documentation.          |
+## 🚀 Features  
+✨ **User Management**: Riders and Drivers can register and log in.  
+🚗 **Ride Request Management**: Request, accept, and cancel rides.  
+🌐 **Geospatial Queries**: Calculate routes, track locations, and find nearby drivers.  
+💰 **Dynamic Fare Calculation**: Calculate trip fares based on distance and time.  
+🔐 **Secure Endpoints**: Role-based access control using Spring Security.  
+📄 **Swagger Documentation**: Interactive API testing with Swagger UI.  
 
 ---
 
-## 🛠️ Prerequisites
-
-Make sure you have the following installed:
-
-- **Java 17** or later
-- **Maven 3.8+**
-- **PostgreSQL 13** or later(with PostGIS extension)
+## 🛠️ Tech Stack  
+- **Backend Framework**: Spring Boot  
+- **REST API Development**: Spring Boot  
+- **Database**: PostgreSQL with PostGIS extension  
+- **ORM**: Hibernate  
+- **Database Layer**: Spring Data JPA  
+- **Security**: Spring Security for authentication and authorization  
+- **API Documentation**: Swagger UI  
+- **Dependency Management**: Maven  
 
 ---
 
-## 📦 Getting Started
+## 📦 Installation  
 
-### 1. **Clone the Repository**
+### Prerequisites  
+- **Java 11+**  
+- **PostgreSQL 13+** with **PostGIS** extension  
+- **Maven 3+**  
 
+### Clone the Repository  
 ```bash
-git clone https://github.com/yourusername/UberApp.git
+git clone https://github.com/your-username/UberApp.git  
 cd UberApp
 ```
 
-### 2. **Configure the Application**
-
-Update the `src/main/resources/application.properties` file with your database configurations:
-
-```properties
-# Database configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/uber_db
-spring.datasource.username=your-username
-spring.datasource.password=your-password
-
-# JPA Hibernate configuration
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-# JWT properties
-jwt.secret=your-jwt-secret
-
-
-# Swagger UI properties
-springdoc.swagger-ui.path=/swagger-ui.html
-```
-
-### 3. **Install PostgreSQL and PostGIS**
-
+### Install Dependencies  
 ```bash
-# Install PostgreSQL and PostGIS (for Ubuntu)
-sudo apt update
-sudo apt install postgresql postgresql-contrib postgis postgresql-13-postgis-3
-```
-
-Enable PostGIS on your database:
-
-```sql
-CREATE EXTENSION postgis;
-```
-
-### 4. **Build and Run the Application**
-
-```bash
-# Run with Maven
 mvn clean install
-mvn spring-boot:run
-```
-
-### 5. **Access the Application**
-
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **Admin Dashboard**: `http://localhost:8080/admin`
-  
----
-
-## 🧪 Running Tests
-
-Run unit and integration tests using Maven:
-
-```bash
-mvn test
 ```
 
 ---
 
-## 📖 API Endpoints
-## Here is a full API Endpoints of all API path (Open it in PostMan)
+## 🗄️ Database Setup  
 
+1. **Create PostgreSQL Database**  
+   ```sql
+   CREATE DATABASE uber_backend;
+   ```
 
-Check out the full API docs at `/swagger-ui.html`!
+2. **Enable PostGIS Extension**  
+   ```sql
+   \c uber_backend;
+   CREATE EXTENSION postgis;
+   ```
 
----
-
-## 📊 Database Schema
-
-This project uses PostgreSQL along with **PostGIS** to handle geospatial queries for finding the nearest drivers and tracking ride locations. Here’s a quick preview of the key tables:
-
-- **Users**: Stores user information (riders, drivers, admins).
-- **Rides**: Stores ride details including start and end locations (geospatial data).
-- **Drivers**: Driver-specific information like vehicle details.
-- **Payments**: Handles transaction information for rides.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! If you'd like to contribute, please:
-
-1. Fork the repository.
-2. Create a new branch for your feature/bugfix.
-3. Commit your changes and push your branch.
-4. Submit a pull request.
+3. **Configure Database Credentials** in `application.properties`  
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/uber_backend
+   spring.datasource.username=your_username
+   spring.datasource.password=your_password
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.show-sql=true
+   spring.security.enabled=true
+   ```
 
 ---
 
-## 📝 License
+## ▶️ Running the Project  
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+1. **Start PostgreSQL**.  
+2. **Run the Spring Boot Application**:  
+   ```bash
+   mvn spring-boot:run
+   ```  
+The server will be available at **http://localhost:8080**.
 
 ---
 
-### Note
+## 📋 API Documentation  
 
-Make sure to update the configurations, feature list, and installation steps as per your specific implementation details!
+### Swagger UI  
+Access **Swagger UI** for detailed API documentation:  
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)  
+
+### Postman Collection  
+Import the **Postman API collection** to explore and test the APIs:
+[UBER_APP_TESTING.postman_collection.json](./UBER_APP_TESTING.postman_collection.json)  
+
+To import:
+1. Open **Postman**.
+2. Click **Import** and upload the JSON file.
+3. Explore and test the APIs directly in Postman.
 
 ---
 
-This `README.md` is the same as the one provided earlier for the Uber-like backend application.
+## 📂 Project Structure  
+```plaintext
+uberapp/  
+│  
+├── src/main/java/com/yourname/uber  
+│   ├── controller/        # API Controllers  
+│   ├── dto/               # Data Transfer Objects  
+│   ├── repository/        # JPA Repositories  
+│   ├── security/          # Security Configurations and Filters  
+│   ├── service/           # Business Logic Services  
+│   ├── util/              # Utility Classes and Helpers 
+│   └── UberBackendApplication.java # Main Application  
+│  
+├── src/main/resources/  
+│   └── application.properties  # Configuration Properties  
+│  
+└── pom.xml                 # Maven Configuration  
+```
+
+---
+
+## 🤝 Contributing  
+1. **Fork** the repository.  
+2. Create a new branch:  
+   ```bash
+   git checkout -b feature-branch
+   ```  
+3. Commit your changes:  
+   ```bash
+   git commit -m "Add feature"
+   ```  
+4. Push to the branch:  
+   ```bash
+   git push origin feature-branch
+   ```  
+5. Open a **Pull Request**.
+
+---
+
+## 🙌 Acknowledgments  
+- **Spring Boot** for the backend framework.  
+- **PostGIS** for geospatial data handling.  
+- **Swagger** for interactive API documentation.  
+- **Spring Security** for securing endpoints.  
+- **Hibernate and JPA** for database operations.  
+
+---
