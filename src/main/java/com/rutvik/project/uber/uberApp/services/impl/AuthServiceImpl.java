@@ -2,6 +2,7 @@ package com.rutvik.project.uber.uberApp.services.impl;
 
 import java.util.Set;
 
+import org.locationtech.jts.geom.Point;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rutvik.project.uber.uberApp.dtos.DriverDto;
 import com.rutvik.project.uber.uberApp.dtos.LogOutDto;
 import com.rutvik.project.uber.uberApp.dtos.LoginResponseDto;
+import com.rutvik.project.uber.uberApp.dtos.PointDto;
 import com.rutvik.project.uber.uberApp.dtos.SignUpDto;
 import com.rutvik.project.uber.uberApp.dtos.UserDto;
 import com.rutvik.project.uber.uberApp.entities.Driver;
@@ -78,9 +80,9 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public DriverDto onboardNewDriver(Long userId,String vehicleId) {
+	public DriverDto onboardNewDriver(Long userId,String vehicleId,PointDto driverLocation) {
 		User user=userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User not found with id "+userId));
-		
+		Point Location = modelMapper.map(driverLocation, Point.class);
 		if(user.getRole().contains(Roles.DRIVER))
 			throw new RuntimeException("User with Id" +userId+" is already a Driver");
 		Driver createDriver=Driver.builder()
@@ -88,6 +90,7 @@ public class AuthServiceImpl implements AuthService {
 				.rating(0.0)
 				.vehicleId(vehicleId)
 				.available(true)
+				.currentLocation(Location)
 				.build();
 		user.getRole().add(Roles.DRIVER);
 		userRepository.save(user);

@@ -57,6 +57,13 @@ public class DriverController {
 	}
 	
 
+	@GetMapping("/getNearByRides")
+	public ResponseEntity<DriverRideDto> getNearByRides() {
+		return ResponseEntity.ok(driverService.getNearByRide());
+
+	}
+	
+
 	@GetMapping("/getMyProfile")
 	public ResponseEntity<DriverDto> getMyProfile() {
 		return ResponseEntity.ok(driverService.getMyProfile());

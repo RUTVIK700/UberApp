@@ -1,5 +1,7 @@
 package com.rutvik.project.uber.uberApp.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -8,6 +10,7 @@ import com.rutvik.project.uber.uberApp.dtos.DriverRideDto;
 import com.rutvik.project.uber.uberApp.dtos.RideDto;
 import com.rutvik.project.uber.uberApp.dtos.RiderDto;
 import com.rutvik.project.uber.uberApp.entities.Driver;
+import com.rutvik.project.uber.uberApp.entities.RideRequest;
 
 public interface DriverService {
 	DriverRideDto cancelRide(Long rideId);
@@ -29,4 +32,8 @@ public interface DriverService {
 	Driver updateDriverAvailablity(Driver driver,boolean available);
 	
 	Driver createNewDriver(Driver driver);
+	
+	DriverRideDto getNearByRide();
+	
+	 void addDrivers(List<Driver> listdrivers,RideRequest rideRequest );
 }

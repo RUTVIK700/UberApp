@@ -42,6 +42,8 @@ INSERT INTO app_user (name, email, password) VALUES
 
 INSERT INTO user_role (user_id, role) VALUES
 (1, 'ADMIN'),
+(1, 'RIDER'),
+(1, 'DRIVER'),
 (2, 'RIDER'),
 (2, 'DRIVER'),
 (3, 'RIDER'),

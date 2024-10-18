@@ -6,4 +6,5 @@ import lombok.Data;
 public class VehicleDto {
 
 	String vehicle;
+	PointDto driverLocation;
 }

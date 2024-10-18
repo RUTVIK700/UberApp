@@ -30,6 +30,7 @@ import com.rutvik.project.uber.uberApp.strategies.RideStrategyManager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -41,20 +42,21 @@ public class RiderServiceImpl implements RiderService {
 	private final RideService rideService;
 	private final DriverService driverService;
 	private final RatingService ratingService;
+
 	@Override
 	public RideDto cancelRide(Long rideId) {
-		Rider rider=getCurrentRider();
-		Ride ride= rideService.getRideById(rideId);
-		
-		if(!rider.equals(ride.getRider())) {
-			throw new RuntimeException("Rider does not own this ride "+ ride.getId());
-			
+		Rider rider = getCurrentRider();
+		Ride ride = rideService.getRideById(rideId);
+
+		if (!rider.equals(ride.getRider())) {
+			throw new RuntimeException("Rider does not own this ride " + ride.getId());
+
 		}
-		
-		if(!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
-			throw new RuntimeException("Ride cannot be cancelled,invalid status: "+ride.getRideStatus());
+
+		if (!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
+			throw new RuntimeException("Ride cannot be cancelled,invalid status: " + ride.getRideStatus());
 		}
-		
+
 		Ride savedRide = rideService.updateRideStatus(ride, RideStatus.CANCELLED);
 		driverService.updateDriverAvailablity(ride.getDriver(), true);
 		return modelMapper.map(savedRide, RideDto.class);
@@ -66,7 +68,7 @@ public class RiderServiceImpl implements RiderService {
 		Rider rider = getCurrentRider();
 
 		if (!rider.equals(ride.getRider())) {
-			throw new RuntimeException("Rider is not the owner of this id "+ride.getId());
+			throw new RuntimeException("Rider is not the owner of this id " + ride.getId());
 		}
 
 		if (!ride.getRideStatus().equals(RideStatus.ENDED)) {
@@ -74,30 +76,32 @@ public class RiderServiceImpl implements RiderService {
 					"Ride status is not ENDED hence cannot be rate , status: " + ride.getRideStatus());
 		}
 		DriverDto rateDriverDto = ratingService.rateDriver(ride, rating);
-		
+
 		return rateDriverDto;
 	}
 
 	@Override
 	public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
-		Rider rider=getCurrentRider();
-		RideRequest rideRequest=modelMapper.map(rideRequestDto, RideRequest.class);
+		Rider rider = getCurrentRider();
+		RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
 		rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
 		rideRequest.setRider(rider);
-		
-		Double fare=strategyManager.rideFareCalculationStrategy().calcuclateFare(rideRequest);
+
+		Double fare = strategyManager.rideFareCalculationStrategy().calcuclateFare(rideRequest);
 		rideRequest.setFare(fare);
-		
+
 		RideRequest saveRideRequest = rideRequestRepository.save(rideRequest);
-		
-		List<Driver> drivers=strategyManager.driverMatchingStrategy(rider.getRating()).findMatchinghDriver(rideRequest);
+
+		List<Driver> drivers = strategyManager.driverMatchingStrategy(rider.getRating())
+				.findMatchinghDriver(rideRequest);
+		driverService.addDrivers(drivers, saveRideRequest);
 		
 		return modelMapper.map(saveRideRequest, RideRequestDto.class);
 	}
 
 	@Override
 	public RiderDto getMyProfile() {
-		Rider rider=getCurrentRider();
+		Rider rider = getCurrentRider();
 		return modelMapper.map(rider, RiderDto.class);
 	}
 
@@ -110,17 +114,14 @@ public class RiderServiceImpl implements RiderService {
 
 	@Override
 	public Rider createNewRider(User user) {
-		Rider rider=Rider.builder()
-				.user(user)
-				.rating(0.0)
-				.build();
+		Rider rider = Rider.builder().user(user).rating(0.0).build();
 		return riderRepository.save(rider);
 	}
 
 	@Override
 	public Rider getCurrentRider() {
-		User user=(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return riderRepository.findByUser(user).orElseThrow(()->new ResourceNotFoundException("id not found"));
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return riderRepository.findByUser(user).orElseThrow(() -> new ResourceNotFoundException("id not found"));
 	}
 
 }

@@ -1,6 +1,11 @@
 package com.rutvik.project.uber.uberApp.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -38,6 +43,9 @@ public class DriverServiceImpl implements DriverService {
 	private final ModelMapper mapper;
 	private final PaymentService paymentService;
 	private final RatingService ratingService;
+	private List<Driver> listDriverName;
+	private RideRequest SavedrideRequest;
+
 	@Override
 	public DriverRideDto cancelRide(Long rideId) {
 		Ride ride = rideService.getRideById(rideId);
@@ -76,10 +84,10 @@ public class DriverServiceImpl implements DriverService {
 		}
 		ride.setStartedAt(LocalDateTime.now());
 		Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ONGOING);
-		
+
 		paymentService.createNewPayment(savedRide);
 		ratingService.createNewRating(savedRide);
-		
+
 		return mapper.map(savedRide, DriverRideDto.class);
 	}
 
@@ -97,25 +105,25 @@ public class DriverServiceImpl implements DriverService {
 			throw new RuntimeException(
 					"Ride status is not ONGOING hence cannot be started , status: " + ride.getRideStatus());
 		}
-		
+
 		ride.setEndedAt(LocalDateTime.now());
-		
+
 		Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ENDED);
 		updateDriverAvailablity(driver, true);
-		
+
 		paymentService.processPayment(ride);
-		
-		return mapper.map(savedRide, DriverRideDto.class) ;
+
+		return mapper.map(savedRide, DriverRideDto.class);
 	}
 
 	@Override
 	public RiderDto rateRider(Long rideId, Integer rating) {
-		//look 02:27:00 on week4 first video for implementing
+		// look 02:27:00 on week4 first video for implementing
 		Ride ride = rideService.getRideById(rideId);
 		Driver driver = getCurrentDriver();
 
 		if (!driver.equals(ride.getDriver())) {
-			throw new RuntimeException("Driver is not the owner of this id "+ride.getId());
+			throw new RuntimeException("Driver is not the owner of this id " + ride.getId());
 		}
 
 		if (!ride.getRideStatus().equals(RideStatus.ENDED)) {
@@ -123,7 +131,7 @@ public class DriverServiceImpl implements DriverService {
 					"Ride status is not ENDED hence cannot be rate , status: " + ride.getRideStatus());
 		}
 		RiderDto rateRiderDto = ratingService.rateRider(ride, rating);
-		
+
 		return rateRiderDto;
 	}
 
@@ -157,14 +165,13 @@ public class DriverServiceImpl implements DriverService {
 	@Override
 	public Page<RideDto> getAllMyRides(PageRequest pageRequest) {
 		Driver currentDriver = getCurrentDriver();
-		return rideService.getAllRidesOfDriver(currentDriver, pageRequest)
-				.map(ride -> mapper.map(ride, RideDto.class));
+		return rideService.getAllRidesOfDriver(currentDriver, pageRequest).map(ride -> mapper.map(ride, RideDto.class));
 
 	}
 
 	@Override
 	public Driver getCurrentDriver() {
-		User user=(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return driverRepository.findByUser(user).orElseThrow(() -> new ResourceNotFoundException("Driver not found"));
 	}
 
@@ -176,8 +183,25 @@ public class DriverServiceImpl implements DriverService {
 
 	@Override
 	public Driver createNewDriver(Driver driver) {
-		
+
 		return driverRepository.save(driver);
+	}
+
+	@Override
+	public DriverRideDto getNearByRide() {
+		Driver driver = getCurrentDriver();
+		String driverName = driver.getUser().getName();
+		Driver Name = listDriverName.stream().filter(name -> name.equals(driverName)).findFirst()
+				.orElseThrow(() -> new ResourceNotFoundException("No Rides NearBy"));
+
+		return mapper.map(SavedrideRequest, DriverRideDto.class);
+
+	}
+
+	@Override
+	public void addDrivers(List<Driver> listdrivers, RideRequest rideRequest) {
+		listDriverName = listdrivers;
+		SavedrideRequest = rideRequest;
 	}
 
 }
